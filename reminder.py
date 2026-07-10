@@ -1,8 +1,10 @@
 import pandas as pd
 from datetime import datetime, timedelta
-
+from google_drive import download_excel, upload_excel
 from email_service import send_email
 from config import *
+
+download_excel()
 
 df = pd.read_excel(
     BOOKING_FILE,
@@ -58,5 +60,7 @@ df.to_excel(
     sheet_name=SHEET_NAME,
     index=False
 )
+
+upload_excel()
 
 print("Done!")

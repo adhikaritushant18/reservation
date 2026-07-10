@@ -1,0 +1,40 @@
+name: Reservation Reminder
+
+on:
+  schedule:
+    # Runs every day at 03:15 UTC (≈ 09:00 Nepal Time)
+    - cron: '15 3 * * *'
+
+  workflow_dispatch:
+
+jobs:
+  reminder:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Packages
+        run: |
+          pip install -r requirements.txt
+
+      - name: Create Google Credentials File
+        run: |
+          echo '${{ secrets.GOOGLE_CREDENTIALS }}' > credentials.json
+
+      - name: Run Reminder Script
+        env:
+          EMAIL: ${{ secrets.EMAIL }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          GOOGLE_DRIVE_FILE_ID: ${{ secrets.GOOGLE_DRIVE_FILE_ID }}
+
+        run: |
+          python reminder.py
