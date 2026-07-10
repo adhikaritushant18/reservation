@@ -1,4 +1,0 @@
-env:
-  EMAIL: ${{ secrets.EMAIL }}
-  EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-  GOOGLE_DRIVE_FILE_ID: ${{ secrets.GOOGLE_DRIVE_FILE_ID }}
