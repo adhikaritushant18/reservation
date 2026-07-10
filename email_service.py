@@ -9,7 +9,7 @@ def send_email(subject, body):
 
     msg["Subject"] = subject
     msg["From"] = EMAIL
-    msg["To"] = TO_EMAIL
+    msg["To"] = ", ".join(TO_EMAIL)
 
     server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
 
@@ -17,6 +17,11 @@ def send_email(subject, body):
 
     server.login(EMAIL, PASSWORD)
 
-    server.send_message(msg)
+    # Send to all recipients
+    server.sendmail(
+        EMAIL,
+        TO_EMAIL,
+        msg.as_string()
+    )
 
     server.quit()
