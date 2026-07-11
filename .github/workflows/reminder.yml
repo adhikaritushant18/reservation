@@ -3,7 +3,7 @@ name: Reservation Reminder
 on:
   schedule:
     # Runs every day at 03:15 UTC (≈ 09:00 Nepal Time)
-    - cron: '15 3 * * *'
+    - cron: '*/5 * * *'
 
   workflow_dispatch:
 
