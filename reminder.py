@@ -13,6 +13,7 @@ df = pd.read_excel(
     BOOKING_FILE,
     sheet_name="Arrival Dates"
 )
+df["Reminder sent at"] = df["Reminder sent at"].astype("object")
 
 tomorrow = datetime.today().date() + timedelta(days=1)
 
