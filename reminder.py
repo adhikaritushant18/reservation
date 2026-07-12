@@ -1,66 +1,96 @@
 import pandas as pd
 from datetime import datetime, timedelta
+
 from google_drive import download_excel, upload_excel
 from email_service import send_email
 from config import *
 
+# Download latest Excel from Google Drive
 download_excel()
 
+# Read Arrival Dates sheet
 df = pd.read_excel(
     BOOKING_FILE,
-    sheet_name=SHEET_NAME
+    sheet_name="Arrival Dates"
 )
 
 tomorrow = datetime.today().date() + timedelta(days=1)
 
 for index, row in df.iterrows():
 
-    arrival = pd.to_datetime(row["Arrival Kathmandu"]).date()
+    arrival = pd.to_datetime(row["Arrival Date"]).date()
 
     reminder = str(row["Reminder Sent"]).strip().lower()
 
     if arrival == tomorrow and reminder != "yes":
 
-        subject = f"Arrival Tomorrow - {row['Group Name']}"
+        subject = (
+            f"Automated Arrival Reminder | "
+            f"{row['Group Name']} | {arrival.strftime('%d-%b-%Y')}"
+        )
 
         body = f"""
 Dear Reservation Team,
 
 This is an automated reminder from the Reservation Management System.
 
-The following group is scheduled to arrive tomorrow. Please ensure that all necessary arrangements have been completed.
+The following guest is arriving tomorrow.
 
---------------------------------------------------
-Booking ID   : {row['Booking ID']}
-Group Name   : {row['Group Name']}
-Arrival Date : {arrival}
-Hotel        : {row['Hotel']}
-Guide        : {row['Guide']}
---------------------------------------------------
+------------------------------------------------------------
 
-Please verify the following:
-• Hotel reservation has been confirmed.
-• Guide has been informed.
-• Airport pickup (if applicable) has been arranged.
-• Any special requests have been addressed.
+Booking ID      : {row['Booking ID']}
 
-This is an automated email. Please do not reply to this message.
+Trip Name       : {row['Trip Name']}
 
-Best Regards,
+Group Name      : {row['Group Name']}
+
+Agency          : {row['Agency']}
+
+Guest Name      : {row['Guest name']}
+
+Pax             : {row['Pax']}
+
+Arrival Date    : {row['Arrival Date']}
+
+Arrival Time    : {row['Arrival Time']}
+
+Flight No       : {row['Flight no']}
+
+Hotel           : {row['Hotel']}
+
+Airport Pickup  : {row['Airport pickup']}
+
+------------------------------------------------------------
+
+Please verify:
+
+✓ Hotel reservation confirmed
+
+✓ Airport pickup arranged
+
+✓ Guide informed
+
+✓ Guest arrival prepared
+
+This is an automated email.
 
 Reservation Management System
 Makalu Adventure Travel & Tours Pvt. Ltd.
 """
+
         send_email(subject, body)
 
         df.at[index, "Reminder Sent"] = "Yes"
+        df.at[index, "Reminder sent at"] = datetime.now().strftime("%Y-%m-%d %H:%M")
 
+# Save updated workbook
 df.to_excel(
     BOOKING_FILE,
-    sheet_name=SHEET_NAME,
+    sheet_name="Arrival Dates",
     index=False
 )
 
+# Upload updated workbook
 upload_excel()
 
-print("Done!")
+print("Reminder process completed successfully.")
