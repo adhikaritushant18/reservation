@@ -4,7 +4,8 @@ SMTP_SERVER="smtp.gmail.com"
 SMTP_PORT=587
 TO_EMAIL = [
     "adhikaritushant23@gmail.com",
-    "adhikaritushant18@gmail.com"
+    "info@makalu-adventure.com",
+    "mohanlamsal@gmail.com"
 ]
 BOOKING_FILE="booking.xlsx"
 SHEET_NAME="Arrival Dates"
