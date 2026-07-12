@@ -88,20 +88,18 @@ Makalu Adventure Travel & Tours Pvt. Ltd.
 # Save updated workbook
 book = load_workbook(BOOKING_FILE)
 
-# Write only the Arrival Dates sheet
 with pd.ExcelWriter(
     BOOKING_FILE,
     engine="openpyxl",
     mode="a",
     if_sheet_exists="replace"
 ) as writer:
-
-    writer.book = book
     df.to_excel(
         writer,
         sheet_name="Arrival Dates",
         index=False
     )
+
 # Upload updated workbook
 upload_excel()
 
