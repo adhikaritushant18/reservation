@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from google_drive import download_excel, upload_excel
 from email_service import send_email
 from config import *
+from openpyxl import load_workbook
 
 # Download latest Excel from Google Drive
 download_excel()
@@ -85,12 +86,22 @@ Makalu Adventure Travel & Tours Pvt. Ltd.
         df.at[index, "Reminder sent at"] = datetime.now().strftime("%Y-%m-%d %H:%M")
 
 # Save updated workbook
-df.to_excel(
-    BOOKING_FILE,
-    sheet_name="Arrival Dates",
-    index=False
-)
+book = load_workbook(BOOKING_FILE)
 
+# Write only the Arrival Dates sheet
+with pd.ExcelWriter(
+    BOOKING_FILE,
+    engine="openpyxl",
+    mode="a",
+    if_sheet_exists="replace"
+) as writer:
+
+    writer.book = book
+    df.to_excel(
+        writer,
+        sheet_name="Arrival Dates",
+        index=False
+    )
 # Upload updated workbook
 upload_excel()
 
